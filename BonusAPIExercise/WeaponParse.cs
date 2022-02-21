@@ -8,7 +8,7 @@ namespace BonusAPIExercise
 {
     public static class WeaponParse
     {
-        public static string[] GetWeapons(JToken conn)
+        public static string GetWeapons(JToken conn)
         {
             var tempS = "";
             var rList = new List<string>();
@@ -25,8 +25,13 @@ namespace BonusAPIExercise
                     rList.Add(tempS);
                 }
             }
+            var wepsString = "";
+            foreach (var weapon in rList)
+            {
+                wepsString += weapon + ", ";
+            }
 
-            return rList.ToArray();
+            return wepsString;
         }
 
         public static string GetFlags(JToken wep)

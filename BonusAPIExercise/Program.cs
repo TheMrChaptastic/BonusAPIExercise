@@ -20,8 +20,7 @@ namespace BonusAPIExercise
             do
             {
                 Console.Clear();
-                Console.WriteLine("Character = Character Information(!Requires API Key with Permissions!) \nProfession = Professions Info" +
-                    "\nDaily = Dailies Today \nBoss = World Bosses");
+                Console.WriteLine("Character = Character Information(!Requires API Key with Permissions!) \nProfession = Professions Info \nExit = End Program");
                 Console.WriteLine("\nChoose an Option!");
                 uInput = Console.ReadLine();
                 switch (uInput.ToLower())
@@ -34,18 +33,6 @@ namespace BonusAPIExercise
                     case "profession":
                     case "professions":
                         Professions.GetProfessions(client);
-                        break;
-                    case "daily":
-                    case "dailies":
-                        Console.WriteLine("Not implemented yet.");
-                        Console.ReadLine();
-                        //Daily.GetDailies(client);
-                        break;
-                    case "boss":
-                    case "bosses":
-                        Console.WriteLine("Not implemented yet.");
-                        Console.ReadLine();
-                        //Boss.GetBosses(client);
                         break;
                     case "exit":
                         Console.WriteLine("Hope you enjoyed!");

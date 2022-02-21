@@ -22,25 +22,48 @@ namespace BonusAPIExercise
         public string ApiKey { get; set; }
         public void GetCharacterInfo(HttpClient client)
         {
-            Console.WriteLine();
+            Console.Clear();
             Console.WriteLine("Enter Your Characters Name: ");
             var userInput = Console.ReadLine();
             //Format it to "Upper Caseing" and only allow 2 words
+            //add try catch incase no character exists
+            try
+            {
+                string charConn = "https://api.guildwars2.com/v2/characters/" + userInput.Replace(" ", "%20").Trim() + ApiKey;
+                var gw2CharAPI = client.GetStringAsync(charConn).Result;
+                var charInfo = JObject.Parse(gw2CharAPI);
+                var title = "";
+                if (charInfo["title"] != null)
+                {
+                    var titleId = charInfo["title"].ToString();
+                    string titleConn = "https://api.guildwars2.com/v2/titles/" + titleId;
+                    var gw2TitleAPI = client.GetStringAsync(titleConn).Result;
+                    title = JObject.Parse(gw2TitleAPI).GetValue("name").ToString();
+                }
+                else
+                {
+                    title = "\'No Title\'";
+                }
 
-            string conn = "https://api.guildwars2.com/v2/characters/" + userInput.Replace(" ","%20").Trim() + ApiKey;
+                var specializations = charInfo["specializations"]["pve"].ToString();
 
-            var gw2API = client.GetStringAsync(conn).Result;
+                var hoursOld = (int.Parse(charInfo["age"].ToString()) / 60 / 60);
+                var spec = SpecializationParser.GetSpecialization(charInfo["profession"].ToString(), specializations);
 
-            var charInfo = JObject.Parse(gw2API);
-            var hoursOld = (int.Parse(charInfo["age"].ToString()) / 60 / 60);
-
-            Console.WriteLine();
-            Console.WriteLine($"{charInfo["name"]}: {charInfo["race"]} {charInfo["gender"]} {charInfo["profession"]}");
-            Console.WriteLine($"Level: {charInfo["level"]} | Deaths so far: {charInfo["deaths"]}");
-            Console.WriteLine($"{hoursOld} Hours old.");
-            Console.ReadLine();
+                Console.WriteLine();
+                Console.WriteLine($"{charInfo["name"]} - {title}");
+                Console.WriteLine($"{charInfo["race"]} {charInfo["gender"]} {spec} {charInfo["profession"]}");
+                Console.WriteLine($"Level: {charInfo["level"]} | Deaths so far: {charInfo["deaths"]}");
+                Console.WriteLine($"{hoursOld} Hours old.");
+                Console.ReadLine();
+            }
+            catch
+            {
+                Console.WriteLine("Character doesnt exist in account or API key doesnt have correct permissions.");
+                Console.WriteLine("Enter to continue.");
+                Console.ReadLine();
+            }
         }
-        
 
     }
 }
